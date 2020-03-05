@@ -11,3 +11,5 @@ https://www.magata.net/memo/index.php?Flask%A4%CE%B4%F0%C1%C3
 ```
 python3 manage.py
 ```
+
+https://qiita.com/5zm/items/ac8c9d1d74d012e682b4
