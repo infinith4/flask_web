@@ -1,0 +1,12 @@
+{% extends "layout.html" %}
+{% include "header.html" %}
+{% block body %}
+<body>
+    <p class="hello">get privatekey wif</p>
+    <form action="/mnemonic" method="POST">
+        <input type="text" name="mnemonic" placeholder="Your mnemonic">
+        <input type="submit" value="post_mnemonic">
+    </form>
+    <p>{{privatekey_wif}}</p>
+</body>
+{% endblock %}

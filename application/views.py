@@ -14,8 +14,13 @@ def hello():
     return html
 
 @app.route('/mnemonic')
-def mnemonic():
-    bsv_mnemonic = app.config['TESTNET_MNEMONIC']
+def get_mnemonic():
+    html = render_template('mnemonic.html', title="mnemonic")
+    return html
+
+@app.route("/mnemonic", methods=["POST"])
+def post_mnemonic():
+    bsv_mnemonic = request.form["mnemonic"]#app.config['TESTNET_MNEMONIC']
     bip39Mnemonic = Bip39Mnemonic(bsv_mnemonic, passphrase="", network="test")
-    html = render_template('index.html', a = bip39Mnemonic.privatekey_wif, title="mnemonic")
+    html = render_template('mnemonic.html', privatekey_wif = bip39Mnemonic.privatekey_wif, title="mnemonic")
     return html
