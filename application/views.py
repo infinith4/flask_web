@@ -9,6 +9,7 @@ import numpy as np
 import requests
 import json
 import binascii
+import bitsv
 
 @app.route('/')
 def index():
@@ -20,17 +21,26 @@ def hello():
     html = render_template('index.html', a = 'aaaa', title="HelloTitle")
     return html
 
-@app.route('/mnemonic')
-def get_mnemonic():
-    html = render_template('mnemonic.html', title="mnemonic")
-    return html
-
-@app.route("/mnemonic", methods=["POST"])
-def post_mnemonic():
-    bsv_mnemonic = request.form["mnemonic"]  #app.config['TESTNET_MNEMONIC']
-    bip39Mnemonic = Bip39Mnemonic(bsv_mnemonic, passphrase="", network="test")
-    html = render_template('mnemonic.html', privatekey_wif = bip39Mnemonic.privatekey_wif, title="mnemonic")
-    return html
+@app.route('/mnemonic', methods=["GET", "POST"])
+def mnemonic():
+    if request.method == "GET":
+        html = render_template('mnemonic.html', title="mnemonic")
+        return html
+    elif request.method == "POST":
+        mnemonic = request.form["mnemonic"]  #app.config['TESTNET_MNEMONIC']
+        bip39Mnemonic = Bip39Mnemonic(mnemonic, passphrase="", network="test")
+        privateKey = bitsv.Key(bip39Mnemonic.privatekey_wif)
+        address = privateKey.address
+        balance_satoshi = privateKey.get_balance()
+        balance_bsv = float(balance_satoshi) / float(100000000)
+        html = render_template(
+            'mnemonic.html',
+            privatekey_wif = bip39Mnemonic.privatekey_wif,
+            address = address,
+            balance_satoshi = balance_satoshi,
+            balance_bsv = balance_bsv,
+            title="mnemonic")
+        return html
 
 @app.route("/download", methods=["GET", "POST"])
 def download():
@@ -54,8 +64,8 @@ def download():
         print("upload_mimetype: " + upload_mimetype)
         print("upload_charset: " + upload_charset)
         print("upload_filename: " + upload_filename)
-        download_path = './application/download'
-
+        
+        #download_path = './application/download'
         # if not os.path.isdir(download_path):
         #     os.mkdir(download_path)
         # path_w = os.path.join(download_path, txid)
@@ -73,7 +83,6 @@ def download():
         response.headers["Content-Disposition"] = 'attachment; filename=' + downloadFilename
         response.mimetype = upload_mimetype
         return response
-
 
 @app.route("/upload", methods=["GET", "POST"])
 def upload_file():
