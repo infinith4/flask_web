@@ -22,3 +22,28 @@ https://test.whatsonchain.com/address/mnoTQaiqDBjUG6WWAUwhFycirbrKYUMgmU
 ## baseurl
 
 https://api.whatsonchain.com/v1/bsv/test/tx/hash/
+
+## deploy
+
+python3 -m venv test_env
+source test_env/bin/activate
+pip3 freeze
+
+
+
+pip3 install flask
+pip3 install mnemonic
+pip3 install git+https://github.com/tys-hiroshi/bsvbip32.git
+werkzeug
+pip3 install wheel
+pip3 install polyglot-bitcoin
+pip3 install numpy
+pip install bitsv
+
+
+
+pip3 freeze > requirements.txt
+
+pip3 install -r requirements.txt
+
+az webapp up --sku F1 -n pyflaskweb001 -l eastasia
